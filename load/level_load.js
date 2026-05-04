@@ -343,7 +343,9 @@ export class loadlevel extends processing{
             this.savingtrack.push([]);
             this.savingtrack[i].push(this.trackpos[i].slice());
             this.savingtrack[i].push([this.trackscale[i].slice() , this.tracksro[i][1] , this.tracksro[i][2]]);
+            if (i > 0) this.savingtrack[i].push(this.ballpos[i - 1].slice());
         };
+        //savingtrack [[x,y],[[sx,sy],r,o]]
         for (let i = 0 ; i < this.actionMoveTrack.length ; i++) {
             const event = this.actionMoveTrack[i];
             const floor = event['floor'];
@@ -447,11 +449,13 @@ export class loadlevel extends processing{
             else {
                 change[i].push(target[i][0] - old[i][0]);
                 this.savingtrack[F][0][0] = target[i][0];
+                if (this.savingtrack[F][2]) this.savingtrack[F][2][0] += change[i][0];
             };
             if (cy == null) change[i].push(0);
             else {
                 change[i].push(target[i][1] - old[i][1]);
                 this.savingtrack[F][0][1] = target[i][1];
+                if (this.savingtrack[F][2]) this.savingtrack[F][2][1] += change[i][1];
             };
             if (cr == null) change[i].push(0);
             else {
@@ -475,7 +479,7 @@ export class loadlevel extends processing{
             };
             moved.push([0,0,0,0,0,0]);
         };
-        return[[change , tiles , dura , ease , startTime , 0 , event] , moved];
+        return[[change , tiles , dura , ease , startTime , 0 , event] , moved , structuredClone(this.savingtrack)];
     };
 
 
